@@ -17,6 +17,7 @@ import '../../features/community/community_screen.dart';
 import '../../features/companion/companion_screen.dart';
 import '../../features/performance/performance_screen.dart';
 import '../../features/recovery/recovery_screen.dart';
+import '../../features/readiness/readiness_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/reports/report_detail_screen.dart';
@@ -24,6 +25,7 @@ import '../../features/reports/reports_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/mission/mission_screen.dart';
+import '../../features/moments/moments_screen.dart';
 import '../../features/wellness/journey_screen.dart';
 import '../../features/wellness/mindfulness_screen.dart';
 import '../../features/wellness/sleep_screen.dart';
@@ -81,6 +83,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LabsScreen());
       case '/care':
         return MaterialPageRoute(builder: (_) => const CareScreen());
+      case '/readiness':
+        return MaterialPageRoute(builder: (_) => const ReadinessScreen());
+      case '/moments':
+        return MaterialPageRoute(builder: (_) => const MomentsScreen());
       case '/mission':
         return MaterialPageRoute(builder: (_) => const MissionScreen());
       case '/companion':

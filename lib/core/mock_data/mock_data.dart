@@ -867,4 +867,104 @@ class MockData {
       };
     });
   }
+
+  static Map<String, dynamic> readinessOrbit(int seed) {
+    final random = Random(seed + 4040);
+    final segments = [
+      {'title': 'Hydration', 'value': 7.6},
+      {'title': 'Breath', 'value': 8.2},
+      {'title': 'Mobility', 'value': 6.9},
+    ];
+    return {
+      'score': .7 + random.nextDouble() * .2,
+      'label': 'Orbit stable · ${random.nextInt(3) + 1}h buffer',
+      'delta': '+${(random.nextDouble() * 4).toStringAsFixed(1)}% vs yesterday',
+      'segments': segments,
+    };
+  }
+
+  static List<Map<String, dynamic>> readinessAlerts(int seed) {
+    final random = Random(seed + 5050);
+    final titles = [
+      'Hydration loop paused',
+      'No guardian check-in',
+      'Device battery low',
+    ];
+    return List.generate(titles.length, (index) {
+      return {
+        'id': 'readiness-alert-$index',
+        'title': titles[index],
+        'message': 'Resolve within ${(index + 1) * 2}h to keep readiness high.',
+        'acknowledged': random.nextBool() && index != 0,
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> readinessDrills(int seed) {
+    final random = Random(seed + 6060);
+    final drills = [
+      'Guardian ping',
+      'Emergency breathing',
+      'Vitals broadcast',
+    ];
+    return List.generate(drills.length, (index) {
+      return {
+        'id': 'readiness-drill-$index',
+        'title': drills[index],
+        'description': 'Practice ${drills[index].toLowerCase()} for '
+            '${5 + index * 2} minutes.',
+        'completed': random.nextBool() && index == 2,
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> guardianContacts(int seed) {
+    final random = Random(seed + 7070);
+    final names = ['Layla', 'Omar', 'Mira'];
+    return List.generate(names.length, (index) {
+      return {
+        'id': 'guardian-$index',
+        'name': names[index],
+        'role': index == 0 ? 'Primary' : 'Backup',
+        'avatar': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e',
+        'preferredChannel': index == 1 ? 'chat' : 'call',
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> momentEntries(int seed) {
+    final random = Random(seed + 8080);
+    final notes = [
+      'Sunlight walk shifted my mood.',
+      'Breathing with the ring cooled HRV.',
+      'Called mom and felt supported.',
+    ];
+    return List.generate(notes.length, (index) {
+      return {
+        'id': 'moment-entry-$index',
+        'mood': index == 0
+            ? 'calm'
+            : index == 1
+                ? 'focused'
+                : 'energized',
+        'note': notes[index],
+        'timestamp': DateTime.now().subtract(Duration(hours: index * 3)),
+        'favorite': random.nextBool() && index == 0,
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> momentPrompts(int seed) {
+    final prompts = [
+      'Name a micro-win from today.',
+      'Who kept you grounded?',
+      'What ritual calmed you?',
+    ];
+    return List.generate(prompts.length, (index) {
+      return {
+        'id': 'moment-prompt-$index',
+        'title': prompts[index],
+      };
+    });
+  }
 }

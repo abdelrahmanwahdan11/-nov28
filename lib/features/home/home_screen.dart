@@ -9,8 +9,10 @@ import '../../controllers/companion_controller.dart';
 import '../../controllers/hydration_controller.dart';
 import '../../controllers/labs_controller.dart';
 import '../../controllers/mission_controller.dart';
+import '../../controllers/moments_controller.dart';
 import '../../controllers/nutrition_controller.dart';
 import '../../controllers/performance_controller.dart';
+import '../../controllers/readiness_controller.dart';
 import '../../controllers/recovery_controller.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../widgets/ai_info_button.dart';
@@ -36,6 +38,8 @@ class HomeScreen extends StatelessWidget {
     final companionController = scope.companionController;
     final labsController = scope.labsController;
     final careController = scope.careController;
+    final readinessController = scope.readinessController;
+    final momentsController = scope.momentsController;
     final moods = [
       ('calm', loc.translate('mood_calm')),
       ('focused', loc.translate('mood_focused')),
@@ -417,6 +421,10 @@ class HomeScreen extends StatelessWidget {
           _MissionPreview(controller: missionController),
           const SizedBox(height: 24),
           _CompanionPreview(controller: companionController),
+          const SizedBox(height: 24),
+          _ReadinessPreview(controller: readinessController),
+          const SizedBox(height: 24),
+          _MomentsPreview(controller: momentsController),
           const SizedBox(height: 24),
           _LabsPreview(controller: labsController),
           const SizedBox(height: 24),
@@ -1428,6 +1436,235 @@ class _CompanionPreview extends StatelessWidget {
                     Navigator.of(context).pushNamed('/companion');
                   },
                 ).animate().fadeIn();
+              }).toList(),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _ReadinessPreview extends StatelessWidget {
+  const _ReadinessPreview({required this.controller});
+
+  final ReadinessController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.translate('home_readiness_title'),
+                      style: theme.textTheme.titleMedium),
+                  Text(loc.translate('home_readiness_subtitle'),
+                      style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed('/readiness'),
+              child: Text(loc.translate('view_all')),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<Map<String, dynamic>>(
+          valueListenable: controller.orbit,
+          builder: (_, orbit, __) {
+            if (orbit.isEmpty) {
+              return const SkeletonCard.large();
+            }
+            final score = (orbit['score'] as double? ?? .74) * 100;
+            final label = orbit['label'] as String? ?? '';
+            return Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(28),
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary.withOpacity(.16),
+                    theme.colorScheme.primary.withOpacity(.32),
+                  ],
+                ),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        CircularProgressIndicator(
+                          value: score / 100,
+                          strokeWidth: 8,
+                          backgroundColor:
+                              theme.colorScheme.onPrimary.withOpacity(.08),
+                        ),
+                        Center(
+                          child: Text('${score.toStringAsFixed(0)}%',
+                              style: theme.textTheme.titleMedium),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(label, style: theme.textTheme.bodyMedium),
+                        const SizedBox(height: 4),
+                        Text(orbit['delta'] as String? ?? '',
+                            style: theme.textTheme.labelSmall),
+                      ],
+                    ),
+                  ),
+                  const AiInfoButton(),
+                ],
+              ),
+            ).animate().fadeIn().slideX(begin: .06);
+          },
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.alerts,
+          builder: (_, alerts, __) {
+            if (alerts.isEmpty) {
+              return Wrap(
+                spacing: 8,
+                children: const [SkeletonChip(), SkeletonChip()],
+              );
+            }
+            return Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: alerts.take(2).map((alert) {
+                final acknowledged = alert['acknowledged'] == true;
+                return FilterChip(
+                  label: Text(alert['title'] as String? ?? ''),
+                  selected: acknowledged,
+                  onSelected: (_) =>
+                      controller.acknowledgeAlert(alert['id'] as String),
+                ).animate().fadeIn();
+              }).toList(),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _MomentsPreview extends StatelessWidget {
+  const _MomentsPreview({required this.controller});
+
+  final MomentsController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.translate('home_moments_title'),
+                      style: theme.textTheme.titleMedium),
+                  Text(loc.translate('home_moments_subtitle'),
+                      style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed('/moments'),
+              child: Text(loc.translate('view_all')),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<double>(
+          valueListenable: controller.moodScore,
+          builder: (_, score, __) {
+            return Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(28),
+                color: theme.colorScheme.surfaceVariant.withOpacity(.4),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${(score * 10).toStringAsFixed(1)}/10',
+                            style: theme.textTheme.headlineMedium),
+                        Text(loc.translate('moments_mood'),
+                            style: theme.textTheme.bodySmall),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 60,
+                    child: LinearProgressIndicator(
+                      value: score,
+                      minHeight: 10,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ],
+              ),
+            ).animate().fadeIn().slideY(begin: .04);
+          },
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.entries,
+          builder: (_, entries, __) {
+            if (entries.isEmpty) {
+              return const SkeletonCard.list();
+            }
+            return Column(
+              children: entries.take(2).map((entry) {
+                return ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  tileColor: theme.cardColor,
+                  leading: CircleAvatar(
+                    backgroundColor: theme.colorScheme.primary.withOpacity(.12),
+                    child: Text((entry['mood'] as String? ?? 'calm').substring(0, 1)),
+                  ),
+                  title: Text(entry['note'] as String? ?? ''),
+                  subtitle: Text(
+                    TimeOfDay.fromDateTime(
+                            (entry['timestamp'] as DateTime?) ?? DateTime.now())
+                        .format(context),
+                  ),
+                  trailing: Icon(
+                    entry['favorite'] == true
+                        ? IconlyBold.heart
+                        : IconlyLight.heart,
+                    color: entry['favorite'] == true
+                        ? theme.colorScheme.primary
+                        : theme.iconTheme.color,
+                  ),
+                ).animate().fadeIn().slideX(begin: .04);
               }).toList(),
             );
           },

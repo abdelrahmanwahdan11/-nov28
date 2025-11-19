@@ -23,7 +23,9 @@ import 'controllers/reports_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'controllers/insights_controller.dart';
 import 'controllers/mission_controller.dart';
+import 'controllers/moments_controller.dart';
 import 'controllers/performance_controller.dart';
+import 'controllers/readiness_controller.dart';
 import 'controllers/wellness_controller.dart';
 import 'core/localization/app_localizations.dart';
 import 'core/routes/app_router.dart';
@@ -57,6 +59,8 @@ void main() async {
   final recoveryController = RecoveryController();
   final missionController = MissionController();
   final companionController = CompanionController();
+  final readinessController = ReadinessController();
+  final momentsController = MomentsController();
   final soundService = DebugSoundService();
 
   runApp(HealthAiApp(
@@ -84,6 +88,8 @@ void main() async {
     recoveryController: recoveryController,
     missionController: missionController,
     companionController: companionController,
+    readinessController: readinessController,
+    momentsController: momentsController,
     soundService: soundService,
   ));
 }
@@ -115,6 +121,8 @@ class HealthAiApp extends StatefulWidget {
     required this.recoveryController,
     required this.missionController,
     required this.companionController,
+    required this.readinessController,
+    required this.momentsController,
     required this.soundService,
   });
 
@@ -142,6 +150,8 @@ class HealthAiApp extends StatefulWidget {
   final RecoveryController recoveryController;
   final MissionController missionController;
   final CompanionController companionController;
+  final ReadinessController readinessController;
+  final MomentsController momentsController;
   final SoundService soundService;
 
   @override
@@ -183,6 +193,8 @@ class _HealthAiAppState extends State<HealthAiApp> {
           recoveryController: widget.recoveryController,
           missionController: widget.missionController,
           companionController: widget.companionController,
+          readinessController: widget.readinessController,
+          momentsController: widget.momentsController,
           prefs: widget.prefs,
           soundService: widget.soundService,
           child: MaterialApp(

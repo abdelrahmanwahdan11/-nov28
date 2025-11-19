@@ -21,7 +21,9 @@ import 'controllers/compare_controller.dart';
 import 'controllers/companion_controller.dart';
 import 'controllers/insights_controller.dart';
 import 'controllers/mission_controller.dart';
+import 'controllers/moments_controller.dart';
 import 'controllers/performance_controller.dart';
+import 'controllers/readiness_controller.dart';
 import 'controllers/wellness_controller.dart';
 import 'core/services/shared_prefs_service.dart';
 import 'core/services/sound_service.dart';
@@ -53,6 +55,8 @@ class ControllerScope extends InheritedWidget {
     required this.recoveryController,
     required this.missionController,
     required this.companionController,
+    required this.readinessController,
+    required this.momentsController,
     required this.prefs,
     required this.soundService,
   });
@@ -80,6 +84,8 @@ class ControllerScope extends InheritedWidget {
   final RecoveryController recoveryController;
   final MissionController missionController;
   final CompanionController companionController;
+  final ReadinessController readinessController;
+  final MomentsController momentsController;
   final SharedPrefsService prefs;
   final SoundService soundService;
 
