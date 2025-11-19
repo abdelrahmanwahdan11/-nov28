@@ -6,6 +6,8 @@ import '../../controller_scope.dart';
 import '../../controllers/community_controller.dart';
 import '../../controllers/hydration_controller.dart';
 import '../../controllers/nutrition_controller.dart';
+import '../../controllers/performance_controller.dart';
+import '../../controllers/recovery_controller.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../widgets/ai_info_button.dart';
 import '../../widgets/skeletons.dart';
@@ -24,6 +26,8 @@ class HomeScreen extends StatelessWidget {
     final nutritionController = scope.nutritionController;
     final hydrationController = scope.hydrationController;
     final communityController = scope.communityController;
+    final performanceController = scope.performanceController;
+    final recoveryController = scope.recoveryController;
     final moods = [
       ('calm', loc.translate('mood_calm')),
       ('focused', loc.translate('mood_focused')),
@@ -397,6 +401,10 @@ class HomeScreen extends StatelessWidget {
           _HydrationPreview(controller: hydrationController),
           const SizedBox(height: 24),
           _CommunityPreview(controller: communityController),
+          const SizedBox(height: 24),
+          _PerformancePreview(controller: performanceController),
+          const SizedBox(height: 24),
+          _RecoveryPreview(controller: recoveryController),
         ],
       ),
     );
@@ -688,6 +696,189 @@ class _CommunityPreview extends StatelessWidget {
                   ),
                   onTap: () => Navigator.of(context).pushNamed('/community'),
                 ).animate().fadeIn().slideX(begin: .08);
+              }).toList(),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _PerformancePreview extends StatelessWidget {
+  const _PerformancePreview({required this.controller});
+
+  final PerformanceController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.translate('home_performance_title'),
+                      style: theme.textTheme.titleMedium),
+                  Text(loc.translate('home_performance_subtitle'),
+                      style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed('/performance'),
+              child: Text(loc.translate('view_all')),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<double>(
+          valueListenable: controller.readinessScore,
+          builder: (_, score, __) {
+            return Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary.withOpacity(.1),
+                    theme.colorScheme.primary.withOpacity(.3),
+                  ],
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(loc.translate('readiness_score'),
+                        style: theme.textTheme.bodyMedium),
+                  ),
+                  AnimatedSwitcher(
+                    duration: 300.ms,
+                    child: Text(
+                      score.toStringAsFixed(1),
+                      key: ValueKey(score.toStringAsFixed(1)),
+                      style: theme.textTheme.headlineMedium,
+                    ),
+                  ),
+                ],
+              ),
+            ).animate().fadeIn();
+          },
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.sessions,
+          builder: (_, sessions, __) {
+            if (sessions.isEmpty) {
+              return const SkeletonCard.list();
+            }
+            return SizedBox(
+              height: 120,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: sessions.length,
+                itemBuilder: (context, index) {
+                  final session = sessions[index];
+                  return Container(
+                    width: 160,
+                    margin: const EdgeInsets.only(right: 16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      color: theme.cardColor,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(session['title'] as String? ?? ''),
+                        const Spacer(),
+                        Text(session['duration'] as String? ?? ''),
+                      ],
+                    ),
+                  ).animate().fadeIn().slideX(begin: .08);
+                },
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _RecoveryPreview extends StatelessWidget {
+  const _RecoveryPreview({required this.controller});
+
+  final RecoveryController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.translate('home_recovery_title'),
+                      style: theme.textTheme.titleMedium),
+                  Text(loc.translate('home_recovery_subtitle'),
+                      style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed('/recovery'),
+              child: Text(loc.translate('view_all')),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.protocols,
+          builder: (_, protocols, __) {
+            if (protocols.isEmpty) {
+              return const SkeletonCard.list();
+            }
+            return Column(
+              children: protocols.take(2).map((protocol) {
+                final done = protocol['completed'] == true;
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    color: theme.cardColor,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(protocol['title'] as String? ?? ''),
+                            Text(protocol['description'] as String? ?? ''),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        done ? IconlyBold.tick_square : IconlyLight.play,
+                        color: done
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.secondary,
+                      ),
+                    ],
+                  ),
+                ).animate().fadeIn();
               }).toList(),
             );
           },

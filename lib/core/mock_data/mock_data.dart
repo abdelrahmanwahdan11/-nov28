@@ -472,4 +472,102 @@ class MockData {
       };
     });
   }
+
+  static List<Map<String, dynamic>> performanceSessions(int seed) {
+    final random = Random(seed + 101);
+    final titles = [
+      'Mobility ladder',
+      'Power walk burst',
+      'Core pulse',
+      'Neck reset',
+    ];
+    return List.generate(titles.length, (index) {
+      return {
+        'id': 'session-$index',
+        'title': titles[index],
+        'duration': '${4 + index * 2} min',
+        'intensity': (random.nextInt(3) + 1) * 20,
+        'completed': random.nextBool() && index != 2,
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> performanceTimeline(int seed) {
+    final random = Random(seed + 202);
+    final phases = [
+      'Warm-up',
+      'Mobility drill',
+      'Stability focus',
+      'Cool-down',
+    ];
+    return List.generate(phases.length, (index) {
+      return {
+        'id': 'timeline-$index',
+        'title': phases[index],
+        'detail': 'Quality ${(70 + random.nextInt(20))}%, keep cadence steady.',
+        'expanded': index == 0,
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> mobilityHeat(int seed) {
+    final random = Random(seed + 333);
+    final zones = ['Neck', 'Shoulders', 'Spine', 'Hips', 'Ankles'];
+    return List.generate(zones.length, (index) {
+      return {
+        'id': 'mobility-$index',
+        'zone': zones[index],
+        'score': (60 + random.nextInt(30)).toDouble(),
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> recoveryProtocols(int seed) {
+    final random = Random(seed + 404);
+    final steps = [
+      'Resonant breathing',
+      'Contrast shower',
+      'Foam roll release',
+      'Sleep sanctuary prep',
+    ];
+    return List.generate(steps.length, (index) {
+      return {
+        'id': 'recovery-$index',
+        'title': steps[index],
+        'description': 'Complete ${2 + index} cycles with calm exhale focus.',
+        'completed': random.nextBool() && index.isEven,
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> recoveryMoments(int seed) {
+    final random = Random(seed + 505);
+    final titles = ['AM Reset', 'Midday pause', 'Evening unwind'];
+    return List.generate(titles.length, (index) {
+      return {
+        'id': 'moment-reset-$index',
+        'title': titles[index],
+        'summary': '${5 + index * 2} min breath wave',
+        'favorite': random.nextBool() && index == 2,
+        'image': 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1',
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> breathStacks(int seed) {
+    final random = Random(seed + 606);
+    final stacks = [
+      {'id': 'stack-box', 'title': 'Box 4-4-4-4'},
+      {'id': 'stack-478', 'title': '4-7-8 reset'},
+      {'id': 'stack-double', 'title': 'Double exhale'},
+    ];
+    return stacks
+        .map(
+          (stack) => {
+            ...stack,
+            'completed': random.nextBool() && stack['id'] != 'stack-double',
+          },
+        )
+        .toList();
+  }
 }

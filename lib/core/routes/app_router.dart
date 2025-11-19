@@ -12,6 +12,8 @@ import '../../features/insights/insights_screen.dart';
 import '../../features/nutrition/nutrition_screen.dart';
 import '../../features/hydration/hydration_screen.dart';
 import '../../features/community/community_screen.dart';
+import '../../features/performance/performance_screen.dart';
+import '../../features/recovery/recovery_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/reports/report_detail_screen.dart';
@@ -67,6 +69,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const HydrationScreen());
       case '/community':
         return MaterialPageRoute(builder: (_) => const CommunityScreen());
+      case '/performance':
+        return MaterialPageRoute(builder: (_) => const PerformanceScreen());
+      case '/recovery':
+        return MaterialPageRoute(builder: (_) => const RecoveryScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

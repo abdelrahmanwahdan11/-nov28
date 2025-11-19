@@ -12,10 +12,12 @@ import 'controllers/locale_controller.dart';
 import 'controllers/nutrition_controller.dart';
 import 'controllers/onboarding_controller.dart';
 import 'controllers/profile_controller.dart';
+import 'controllers/recovery_controller.dart';
 import 'controllers/reports_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'controllers/compare_controller.dart';
 import 'controllers/insights_controller.dart';
+import 'controllers/performance_controller.dart';
 import 'controllers/wellness_controller.dart';
 import 'core/services/shared_prefs_service.dart';
 import 'core/services/sound_service.dart';
@@ -41,6 +43,8 @@ class ControllerScope extends InheritedWidget {
     required this.nutritionController,
     required this.hydrationController,
     required this.communityController,
+    required this.performanceController,
+    required this.recoveryController,
     required this.prefs,
     required this.soundService,
   });
@@ -62,6 +66,8 @@ class ControllerScope extends InheritedWidget {
   final NutritionController nutritionController;
   final HydrationController hydrationController;
   final CommunityController communityController;
+  final PerformanceController performanceController;
+  final RecoveryController recoveryController;
   final SharedPrefsService prefs;
   final SoundService soundService;
 

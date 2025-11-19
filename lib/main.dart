@@ -15,9 +15,11 @@ import 'controllers/locale_controller.dart';
 import 'controllers/nutrition_controller.dart';
 import 'controllers/onboarding_controller.dart';
 import 'controllers/profile_controller.dart';
+import 'controllers/recovery_controller.dart';
 import 'controllers/reports_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'controllers/insights_controller.dart';
+import 'controllers/performance_controller.dart';
 import 'controllers/wellness_controller.dart';
 import 'core/localization/app_localizations.dart';
 import 'core/routes/app_router.dart';
@@ -45,6 +47,8 @@ void main() async {
   final nutritionController = NutritionController();
   final hydrationController = HydrationController();
   final communityController = CommunityController();
+  final performanceController = PerformanceController();
+  final recoveryController = RecoveryController();
   final soundService = DebugSoundService();
 
   runApp(HealthAiApp(
@@ -63,6 +67,11 @@ void main() async {
     profileController: profileController,
     insightsController: insightsController,
     wellnessController: wellnessController,
+    nutritionController: nutritionController,
+    hydrationController: hydrationController,
+    communityController: communityController,
+    performanceController: performanceController,
+    recoveryController: recoveryController,
     soundService: soundService,
   ));
 }
@@ -88,6 +97,8 @@ class HealthAiApp extends StatefulWidget {
     required this.nutritionController,
     required this.hydrationController,
     required this.communityController,
+    required this.performanceController,
+    required this.recoveryController,
     required this.soundService,
   });
 
@@ -109,6 +120,8 @@ class HealthAiApp extends StatefulWidget {
   final NutritionController nutritionController;
   final HydrationController hydrationController;
   final CommunityController communityController;
+  final PerformanceController performanceController;
+  final RecoveryController recoveryController;
   final SoundService soundService;
 
   @override
@@ -144,6 +157,8 @@ class _HealthAiAppState extends State<HealthAiApp> {
           nutritionController: widget.nutritionController,
           hydrationController: widget.hydrationController,
           communityController: widget.communityController,
+          performanceController: widget.performanceController,
+          recoveryController: widget.recoveryController,
           prefs: widget.prefs,
           soundService: widget.soundService,
           child: MaterialApp(
