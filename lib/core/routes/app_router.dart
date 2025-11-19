@@ -15,6 +15,9 @@ import '../../features/reports/report_detail_screen.dart';
 import '../../features/reports/reports_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/splash/splash_screen.dart';
+import '../../features/wellness/journey_screen.dart';
+import '../../features/wellness/mindfulness_screen.dart';
+import '../../features/wellness/sleep_screen.dart';
 
 class AppRouter {
   static Route<dynamic> generate(RouteSettings settings) {
@@ -49,6 +52,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const InsightsScreen());
       case '/coach':
         return MaterialPageRoute(builder: (_) => const CoachScreen());
+      case '/journey':
+        return MaterialPageRoute(builder: (_) => const JourneyScreen());
+      case '/mindfulness':
+        return MaterialPageRoute(builder: (_) => const MindfulnessScreen());
+      case '/sleep':
+        return MaterialPageRoute(builder: (_) => const SleepScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

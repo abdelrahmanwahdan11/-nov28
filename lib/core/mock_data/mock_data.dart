@@ -198,4 +198,103 @@ class MockData {
         )
         .toList();
   }
+
+  static List<Map<String, dynamic>> wellnessJourney([int seed = 0]) {
+    final random = Random(seed + 33);
+    final stories = [
+      'Mindful wake up',
+      'Precision hydration',
+      'Movement snack',
+      'Sleep sanctuary',
+      'AI review',
+    ];
+    return List.generate(stories.length, (index) {
+      return {
+        'id': 'wellness-$index',
+        'title': stories[index],
+        'description':
+            'Momentum ${(60 + random.nextInt(30))}%, keep the streak tonight.',
+        'progress': (.35 + random.nextDouble() * .6).clamp(0.0, 1.0),
+        'status': index.isEven ? 'steady' : 'boost',
+        'time': '${random.nextInt(5) + 1}h ago',
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> mindfulnessSessions([int seed = 0]) {
+    final sessions = [
+      {
+        'id': 'mind-breath',
+        'title': 'Box breathing',
+        'duration': '4 min',
+        'focus': 'calm',
+      },
+      {
+        'id': 'mind-focus',
+        'title': 'Laser focus',
+        'duration': '6 min',
+        'focus': 'focused',
+      },
+      {
+        'id': 'mind-energy',
+        'title': 'Energy ramp',
+        'duration': '3 min',
+        'focus': 'energized',
+      },
+    ];
+    final random = Random(seed + 55);
+    return sessions
+        .map((session) => {
+              ...session,
+              'completed': random.nextBool() && session['id'] == 'mind-breath',
+              'image': 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1',
+            })
+        .toList();
+  }
+
+  static List<Map<String, dynamic>> sleepCycles([int seed = 0]) {
+    final random = Random(seed + 71);
+    final labels = ['Wind down', 'Light sleep', 'Deep sleep', 'REM'];
+    return List.generate(labels.length, (index) {
+      final duration = 20 + random.nextInt(50);
+      return {
+        'id': 'sleep-$index',
+        'stage': labels[index],
+        'duration': duration,
+        'score': (6.5 + random.nextDouble() * 3).toStringAsFixed(1),
+        'highlight': index == 2
+            ? 'Deep repair spike'
+            : index == 3
+                ? 'Creative dreams'
+                : 'Ease into rest',
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> dailyBoosters([int seed = 0]) {
+    final tasks = [
+      {
+        'id': 'boost-hydration',
+        'title': 'Hydration pulse',
+        'subtitle': '250ml water every 90 minutes.',
+      },
+      {
+        'id': 'boost-break',
+        'title': 'Mobility break',
+        'subtitle': '3 squats + 1 stretch cycle.',
+      },
+      {
+        'id': 'boost-sleep',
+        'title': 'Night prep',
+        'subtitle': 'Dim lights 30 min before bed.',
+      },
+    ];
+    final random = Random(seed + 41);
+    return tasks
+        .map((task) => {
+              ...task,
+              'completed': random.nextBool() && task['id'] != 'boost-sleep',
+            })
+        .toList();
+  }
 }

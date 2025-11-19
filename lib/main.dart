@@ -15,6 +15,7 @@ import 'controllers/profile_controller.dart';
 import 'controllers/reports_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'controllers/insights_controller.dart';
+import 'controllers/wellness_controller.dart';
 import 'core/localization/app_localizations.dart';
 import 'core/routes/app_router.dart';
 import 'core/services/shared_prefs_service.dart';
@@ -37,6 +38,7 @@ void main() async {
   final compareController = CompareController();
   final profileController = ProfileController();
   final insightsController = InsightsController();
+  final wellnessController = WellnessController();
   final soundService = DebugSoundService();
 
   runApp(HealthAiApp(
@@ -54,6 +56,7 @@ void main() async {
     compareController: compareController,
     profileController: profileController,
     insightsController: insightsController,
+    wellnessController: wellnessController,
     soundService: soundService,
   ));
 }
@@ -75,6 +78,7 @@ class HealthAiApp extends StatefulWidget {
     required this.compareController,
     required this.profileController,
     required this.insightsController,
+    required this.wellnessController,
     required this.soundService,
   });
 
@@ -92,6 +96,7 @@ class HealthAiApp extends StatefulWidget {
   final CompareController compareController;
   final ProfileController profileController;
   final InsightsController insightsController;
+  final WellnessController wellnessController;
   final SoundService soundService;
 
   @override
@@ -123,6 +128,7 @@ class _HealthAiAppState extends State<HealthAiApp> {
           compareController: widget.compareController,
           profileController: widget.profileController,
           insightsController: widget.insightsController,
+          wellnessController: widget.wellnessController,
           prefs: widget.prefs,
           soundService: widget.soundService,
           child: MaterialApp(

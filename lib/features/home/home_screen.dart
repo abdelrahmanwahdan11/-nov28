@@ -15,8 +15,14 @@ class HomeScreen extends StatelessWidget {
     final scope = ControllerScope.of(context);
     final controller = scope.homeController;
     final insightsController = scope.insightsController;
+    final wellnessController = scope.wellnessController;
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context);
+    final moods = [
+      ('calm', loc.translate('mood_calm')),
+      ('focused', loc.translate('mood_focused')),
+      ('energized', loc.translate('mood_energized')),
+    ];
 
     final body = RefreshIndicator(
       onRefresh: controller.refresh,
@@ -270,6 +276,115 @@ class HomeScreen extends StatelessWidget {
               );
             },
           ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(loc.translate('home_wellness_title'),
+                        style: theme.textTheme.titleMedium),
+                    Text(loc.translate('home_wellness_subtitle'),
+                        style: theme.textTheme.bodySmall),
+                  ],
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pushNamed('/mindfulness'),
+                child: Text(loc.translate('open_journey')),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ValueListenableBuilder<String>(
+            valueListenable: wellnessController.selectedMood,
+            builder: (_, mood, __) {
+              return Wrap(
+                spacing: 12,
+                children: moods
+                    .map(
+                      (entry) => ChoiceChip(
+                        label: Text(entry.$2),
+                        selected: mood == entry.$1,
+                        onSelected: (_) => wellnessController.setMood(entry.$1),
+                      ).animate().scale(),
+                    )
+                    .toList(),
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 150,
+            child: ValueListenableBuilder<List<Map<String, dynamic>>>(
+              valueListenable: wellnessController.boosters,
+              builder: (_, boosters, __) {
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: boosters.length,
+                  itemBuilder: (context, index) {
+                    final booster = boosters[index];
+                    return Container(
+                      width: 200,
+                      margin: const EdgeInsets.only(right: 16),
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(28),
+                        color: theme.cardColor,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(booster['title'] as String? ?? '',
+                              style: theme.textTheme.titleMedium),
+                          Text(booster['subtitle'] as String? ?? '',
+                              style: theme.textTheme.bodySmall),
+                          const Spacer(),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: IconButton(
+                              icon: Icon(
+                                booster['completed'] == true
+                                    ? IconlyBold.tick_square
+                                    : IconlyLight.play,
+                              ),
+                              onPressed: () => wellnessController
+                                  .toggleBooster(booster['id'] as String),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ).animate().fadeIn().slideX(begin: .08);
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _WellnessCard(
+                  title: loc.translate('mindfulness_room'),
+                  subtitle: loc.translate('breathing_exercise'),
+                  imageUrl:
+                      'https://images.unsplash.com/photo-1524504388940-b1c1722653e1',
+                  onTap: () => Navigator.of(context).pushNamed('/mindfulness'),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _WellnessCard(
+                  title: loc.translate('sleep_lab'),
+                  subtitle: loc.translate('sleep_quality'),
+                  imageUrl:
+                      'https://images.unsplash.com/photo-1506126613408-eca07ce68773',
+                  onTap: () => Navigator.of(context).pushNamed('/sleep'),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -302,6 +417,57 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _WellnessCard extends StatelessWidget {
+  const _WellnessCard({
+    required this.title,
+    required this.subtitle,
+    required this.imageUrl,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final String imageUrl;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 180,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(28),
+          color: theme.cardColor,
+          image: DecorationImage(
+            image: NetworkImage(imageUrl),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(.35),
+              BlendMode.darken,
+            ),
+          ),
+        ),
+        padding: const EdgeInsets.all(20),
+        alignment: Alignment.bottomLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(title,
+                style: theme.textTheme.titleLarge
+                    ?.copyWith(color: Colors.white)),
+            Text(subtitle,
+                style:
+                    theme.textTheme.bodySmall?.copyWith(color: Colors.white70)),
+          ],
+        ),
+      ).animate().scale().fadeIn(),
     );
   }
 }
