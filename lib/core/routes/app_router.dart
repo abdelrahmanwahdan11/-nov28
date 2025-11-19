@@ -7,6 +7,8 @@ import '../../features/checkup/checkup_screen.dart';
 import '../../features/compare/compare_screen.dart';
 import '../../features/dashboard/dashboard_screen.dart';
 import '../../features/home/home_shell.dart';
+import '../../features/insights/coach_screen.dart';
+import '../../features/insights/insights_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/reports/report_detail_screen.dart';
@@ -43,6 +45,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const CompareScreen());
       case '/settings':
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
+      case '/insights':
+        return MaterialPageRoute(builder: (_) => const InsightsScreen());
+      case '/coach':
+        return MaterialPageRoute(builder: (_) => const CoachScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

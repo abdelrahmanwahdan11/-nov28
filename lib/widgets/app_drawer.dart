@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:iconly/iconly.dart';
 
 import '../controller_scope.dart';
 import '../core/localization/app_localizations.dart';
@@ -69,6 +70,16 @@ class AppDrawer extends StatelessWidget {
             ListTile(
               title: Text(loc.translate('drawer_privacy')),
               onTap: () {},
+            ),
+            ListTile(
+              title: Text(loc.translate('insights_lab')),
+              trailing: const Icon(IconlyLight.arrow_right_circle),
+              onTap: () => Navigator.of(context).pushNamed('/insights'),
+            ),
+            ListTile(
+              title: Text(loc.translate('coach_room')),
+              trailing: const Icon(IconlyLight.chat),
+              onTap: () => Navigator.of(context).pushNamed('/coach'),
             ),
             ListTile(
               title: Text(loc.translate('settings')),

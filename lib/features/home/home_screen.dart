@@ -14,6 +14,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final scope = ControllerScope.of(context);
     final controller = scope.homeController;
+    final insightsController = scope.insightsController;
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context);
 
@@ -177,6 +178,95 @@ class HomeScreen extends StatelessWidget {
                       ),
                     )
                     .toList(),
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(loc.translate('home_insights_title'),
+                        style: theme.textTheme.titleMedium),
+                    Text(loc.translate('home_insights_subtitle'),
+                        style: theme.textTheme.bodySmall),
+                  ],
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pushNamed('/insights'),
+                child: Text(loc.translate('view_all')),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ValueListenableBuilder<bool>(
+            valueListenable: insightsController.isLoading,
+            builder: (_, loading, __) {
+              if (loading) {
+                return const SkeletonCard.list();
+              }
+              return ValueListenableBuilder<List<Map<String, dynamic>>>(
+                valueListenable: insightsController.insights,
+                builder: (_, insights, __) {
+                  if (insights.isEmpty) {
+                    return Text(loc.translate('insights_empty'));
+                  }
+                  return Column(
+                    children: insights
+                        .take(2)
+                        .map(
+                          (insight) => GestureDetector(
+                            onTap: () => Navigator.of(context).pushNamed('/insights'),
+                            child: Hero(
+                              tag: 'insight-${insight['id']}',
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 12),
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      theme.colorScheme.primary.withOpacity(.18),
+                                      theme.colorScheme.primary.withOpacity(.05),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(28),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(insight['title'] as String? ?? '',
+                                              style: theme.textTheme.titleMedium),
+                                          const SizedBox(height: 4),
+                                          Text(insight['summary'] as String? ?? '',
+                                              style: theme.textTheme.bodySmall),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('${insight['impact']}',
+                                            style: theme.textTheme.headlineSmall),
+                                        Text(loc.translate('impact'),
+                                            style: theme.textTheme.bodySmall),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ).animate().fadeIn().slideX(begin: .1),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  );
+                },
               );
             },
           ),

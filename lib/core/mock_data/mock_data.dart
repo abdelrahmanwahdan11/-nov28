@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+
 class MockData {
   static final userProfile = {
     'id': 'user-1',
@@ -93,5 +95,107 @@ class MockData {
         'trend': index.isEven ? 'up' : 'down',
       };
     });
+  }
+
+  static List<Map<String, dynamic>> wellnessInsights([int seed = 0]) {
+    final random = Random(seed + 11);
+    final palettes = [
+      0xFF71E5A1,
+      0xFF7AD7F0,
+      0xFFFFD65A,
+      0xFFFF6B6B,
+    ];
+    final templates = [
+      {
+        'id': 'insight-hydration',
+        'title': 'Hydration rhythm',
+        'summary': 'Your hydration stayed balanced for 48h and boosted focus.',
+        'trend': 'up',
+        'tags': ['hydration', 'focus'],
+      },
+      {
+        'id': 'insight-sleep',
+        'title': 'Sleep recovery',
+        'summary': 'Deep sleep improved by 12 minutes last night.',
+        'trend': 'steady',
+        'tags': ['sleep', 'recovery'],
+      },
+      {
+        'id': 'insight-activity',
+        'title': 'Movement streak',
+        'summary': 'You moved at least 6k steps three days in a row.',
+        'trend': 'up',
+        'tags': ['activity'],
+      },
+      {
+        'id': 'insight-stress',
+        'title': 'Calmer mornings',
+        'summary': 'Heart-rate variability stabilized after mindful breathing.',
+        'trend': 'down',
+        'tags': ['stress', 'breath'],
+      },
+    ];
+    return templates
+        .map(
+          (item) => {
+            ...item,
+            'impact': (6 + random.nextDouble() * 2).toStringAsFixed(1),
+            'favorite': false,
+            'color': Color(palettes[random.nextInt(palettes.length)]),
+            'timeframe': '${12 + random.nextInt(12)}h',
+          },
+        )
+        .toList();
+  }
+
+  static List<Map<String, dynamic>> journeyMilestones([int seed = 0]) {
+    final random = Random(seed + 99);
+    final titles = [
+      'Breath training',
+      'Morning sunlight',
+      'Balanced meals',
+      'Weekly report review',
+    ];
+    return List.generate(titles.length, (index) {
+      return {
+        'id': 'journey-$index',
+        'title': titles[index],
+        'description': 'Completed ${50 + random.nextInt(40)}% of this habit.',
+        'progress': (.4 + random.nextDouble() * .5).clamp(0.0, 1.0),
+        'date': DateTime.now().subtract(Duration(days: index * 2 + seed % 3)),
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> coachPlan([int seed = 0]) {
+    final steps = [
+      {
+        'id': 'plan-breath',
+        'title': '2-min guided breathing',
+        'detail': 'Slow inhales + extended exhale for nervous-system calm.',
+        'duration': '2 min',
+      },
+      {
+        'id': 'plan-walk',
+        'title': '300m sunlight walk',
+        'detail': 'Stack a short walk after breakfast for circadian boost.',
+        'duration': '5 min',
+      },
+      {
+        'id': 'plan-log',
+        'title': 'Log gratitude note',
+        'detail': 'Capture one positive observation in your journal.',
+        'duration': '1 min',
+      },
+    ];
+    final random = Random(seed + 7);
+    return steps
+        .map(
+          (step) => {
+            ...step,
+            'completed': random.nextBool() && step['id'] != 'plan-log',
+          },
+        )
+        .toList();
   }
 }

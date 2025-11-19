@@ -12,6 +12,7 @@ import 'controllers/profile_controller.dart';
 import 'controllers/reports_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'controllers/compare_controller.dart';
+import 'controllers/insights_controller.dart';
 import 'core/services/shared_prefs_service.dart';
 import 'core/services/sound_service.dart';
 
@@ -31,6 +32,7 @@ class ControllerScope extends InheritedWidget {
     required this.catalogController,
     required this.compareController,
     required this.profileController,
+    required this.insightsController,
     required this.prefs,
     required this.soundService,
   });
@@ -47,6 +49,7 @@ class ControllerScope extends InheritedWidget {
   final CatalogController catalogController;
   final CompareController compareController;
   final ProfileController profileController;
+  final InsightsController insightsController;
   final SharedPrefsService prefs;
   final SoundService soundService;
 
