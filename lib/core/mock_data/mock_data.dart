@@ -703,4 +703,168 @@ class MockData {
         )
         .toList();
   }
+
+  static List<Map<String, dynamic>> labOrders(int seed) {
+    final random = Random(seed + 515);
+    final tests = [
+      {
+        'title': 'Advanced blood panel',
+        'type': 'blood',
+        'location': 'Clinic hub',
+        'prep': 'Fasting',
+      },
+      {
+        'title': 'Genetics scan',
+        'type': 'genetics',
+        'location': 'Home kit',
+        'prep': 'No prep',
+      },
+      {
+        'title': 'Microbiome map',
+        'type': 'microbiome',
+        'location': 'Courier pickup',
+        'prep': 'Hydrate',
+      },
+    ];
+    return List.generate(tests.length, (index) {
+      final test = tests[index];
+      return {
+        'id': 'lab-$index',
+        'title': test['title'],
+        'type': test['type'],
+        'window': '${8 + index * 3}:00 - ${10 + index * 3}:30',
+        'location': test['location'],
+        'status': index == 0 ? 'Ready' : 'Queued',
+        'preparation': test['prep'],
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> labResults(int seed) {
+    final random = Random(seed + 616);
+    final markers = [
+      {'marker': 'Vitamin D', 'unit': 'ng/mL'},
+      {'marker': 'Inflammation', 'unit': 'score'},
+      {'marker': 'Microbiome diversity', 'unit': '%'},
+    ];
+    return List.generate(markers.length, (index) {
+      final marker = markers[index];
+      final value = 20 + random.nextInt(40);
+      return {
+        'id': 'result-$index',
+        'marker': marker['marker'],
+        'summary': 'Trend ${(random.nextBool() ? 'improving' : 'stable')}.',
+        'value': value,
+        'unit': marker['unit'],
+        'status': index == 0 ? 'normal' : 'high',
+        'acknowledged': index == 0,
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> labKits(int seed) {
+    final random = Random(seed + 717);
+    final kits = ['Blood kit', 'Genetics swab', 'Microbiome pack'];
+    return List.generate(kits.length, (index) {
+      return {
+        'id': 'kit-$index',
+        'title': kits[index],
+        'status': index == 0 ? 'Delivered' : 'In transit',
+        'progress': (.4 + random.nextDouble() * .5).clamp(0.0, 1.0),
+        'completed': index == 0,
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> labTimeline(int seed) {
+    final steps = [
+      'Kit shipped',
+      'Sample collected',
+      'Lab processing',
+      'Insights ready',
+    ];
+    final random = Random(seed + 818);
+    return List.generate(steps.length, (index) {
+      return {
+        'id': 'timeline-lab-$index',
+        'label': steps[index],
+        'detail': index == 2
+            ? 'Analyzing biomarkers'
+            : 'Estimated ${(index + 1) * 6}h',
+        'eta': '${index + 2}h',
+        'completed': index < 2 || random.nextBool(),
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> careTeamMembers(int seed) {
+    final members = [
+      {
+        'id': 'care-mentor-1',
+        'name': 'Dr. Hadi',
+        'role': 'Cardio guide',
+        'avatar': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e',
+      },
+      {
+        'id': 'care-mentor-2',
+        'name': 'Coach Salma',
+        'role': 'Recovery mentor',
+        'avatar': 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',
+      },
+      {
+        'id': 'care-mentor-3',
+        'name': 'Nour',
+        'role': 'Nutritionist',
+        'avatar': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d',
+      },
+    ];
+    final random = Random(seed + 919);
+    return members
+        .map((member) => {
+              ...member,
+              'favorite': random.nextBool() && member['id'] != 'care-mentor-3',
+            })
+        .toList();
+  }
+
+  static List<Map<String, dynamic>> careTickets(int seed) {
+    final random = Random(seed + 2023);
+    final tickets = [
+      {
+        'id': 'ticket-1',
+        'title': 'Follow-up on lab plan',
+        'channel': 'video',
+      },
+      {
+        'id': 'ticket-2',
+        'title': 'Breath coaching',
+        'channel': 'chat',
+      },
+    ];
+    return tickets
+        .map((ticket) => {
+              ...ticket,
+              'status': ticket['id'] == 'ticket-1' ? 'open' : 'closed',
+              'updated': '${random.nextInt(4) + 1}h ago',
+              'eta': '${random.nextInt(2) + 1}h',
+            })
+        .toList();
+  }
+
+  static List<Map<String, dynamic>> carePlans(int seed) {
+    final random = Random(seed + 3033);
+    final steps = [
+      'Upload latest labs',
+      'Book hydration coach',
+      'Share mindfulness log',
+    ];
+    return List.generate(steps.length, (index) {
+      return {
+        'id': 'care-plan-$index',
+        'title': steps[index],
+        'detail': '${index + 1} tap to complete',
+        'completed': random.nextBool() && index == 0,
+      };
+    });
+  }
 }

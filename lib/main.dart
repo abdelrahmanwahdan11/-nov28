@@ -5,6 +5,7 @@ import 'controller_scope.dart';
 import 'controllers/analysis_controller.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/catalog_controller.dart';
+import 'controllers/care_controller.dart';
 import 'controllers/checkup_controller.dart';
 import 'controllers/compare_controller.dart';
 import 'controllers/companion_controller.dart';
@@ -12,6 +13,7 @@ import 'controllers/community_controller.dart';
 import 'controllers/dashboard_controller.dart';
 import 'controllers/home_controller.dart';
 import 'controllers/hydration_controller.dart';
+import 'controllers/labs_controller.dart';
 import 'controllers/locale_controller.dart';
 import 'controllers/nutrition_controller.dart';
 import 'controllers/onboarding_controller.dart';
@@ -49,6 +51,8 @@ void main() async {
   final nutritionController = NutritionController();
   final hydrationController = HydrationController();
   final communityController = CommunityController();
+  final labsController = LabsController();
+  final careController = CareController();
   final performanceController = PerformanceController();
   final recoveryController = RecoveryController();
   final missionController = MissionController();
@@ -74,6 +78,8 @@ void main() async {
     nutritionController: nutritionController,
     hydrationController: hydrationController,
     communityController: communityController,
+    labsController: labsController,
+    careController: careController,
     performanceController: performanceController,
     recoveryController: recoveryController,
     missionController: missionController,
@@ -103,6 +109,8 @@ class HealthAiApp extends StatefulWidget {
     required this.nutritionController,
     required this.hydrationController,
     required this.communityController,
+    required this.labsController,
+    required this.careController,
     required this.performanceController,
     required this.recoveryController,
     required this.missionController,
@@ -128,6 +136,8 @@ class HealthAiApp extends StatefulWidget {
   final NutritionController nutritionController;
   final HydrationController hydrationController;
   final CommunityController communityController;
+  final LabsController labsController;
+  final CareController careController;
   final PerformanceController performanceController;
   final RecoveryController recoveryController;
   final MissionController missionController;
@@ -167,6 +177,8 @@ class _HealthAiAppState extends State<HealthAiApp> {
           nutritionController: widget.nutritionController,
           hydrationController: widget.hydrationController,
           communityController: widget.communityController,
+          labsController: widget.labsController,
+          careController: widget.careController,
           performanceController: widget.performanceController,
           recoveryController: widget.recoveryController,
           missionController: widget.missionController,

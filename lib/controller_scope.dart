@@ -3,11 +3,13 @@ import 'package:flutter/widgets.dart';
 import 'controllers/analysis_controller.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/catalog_controller.dart';
+import 'controllers/care_controller.dart';
 import 'controllers/checkup_controller.dart';
 import 'controllers/community_controller.dart';
 import 'controllers/dashboard_controller.dart';
 import 'controllers/home_controller.dart';
 import 'controllers/hydration_controller.dart';
+import 'controllers/labs_controller.dart';
 import 'controllers/locale_controller.dart';
 import 'controllers/nutrition_controller.dart';
 import 'controllers/onboarding_controller.dart';
@@ -45,6 +47,8 @@ class ControllerScope extends InheritedWidget {
     required this.nutritionController,
     required this.hydrationController,
     required this.communityController,
+    required this.labsController,
+    required this.careController,
     required this.performanceController,
     required this.recoveryController,
     required this.missionController,
@@ -70,6 +74,8 @@ class ControllerScope extends InheritedWidget {
   final NutritionController nutritionController;
   final HydrationController hydrationController;
   final CommunityController communityController;
+  final LabsController labsController;
+  final CareController careController;
   final PerformanceController performanceController;
   final RecoveryController recoveryController;
   final MissionController missionController;

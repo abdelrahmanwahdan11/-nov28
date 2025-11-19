@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import '../../features/analysis/analysis_screen.dart';
 import '../../features/auth/auth_screen.dart';
 import '../../features/catalog/catalog_screen.dart';
+import '../../features/care/care_screen.dart';
 import '../../features/checkup/checkup_screen.dart';
 import '../../features/compare/compare_screen.dart';
 import '../../features/dashboard/dashboard_screen.dart';
 import '../../features/home/home_shell.dart';
 import '../../features/insights/coach_screen.dart';
 import '../../features/insights/insights_screen.dart';
+import '../../features/labs/labs_screen.dart';
 import '../../features/nutrition/nutrition_screen.dart';
 import '../../features/hydration/hydration_screen.dart';
 import '../../features/community/community_screen.dart';
@@ -75,6 +77,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const PerformanceScreen());
       case '/recovery':
         return MaterialPageRoute(builder: (_) => const RecoveryScreen());
+      case '/labs':
+        return MaterialPageRoute(builder: (_) => const LabsScreen());
+      case '/care':
+        return MaterialPageRoute(builder: (_) => const CareScreen());
       case '/mission':
         return MaterialPageRoute(builder: (_) => const MissionScreen());
       case '/companion':

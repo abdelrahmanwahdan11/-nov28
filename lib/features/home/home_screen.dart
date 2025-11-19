@@ -3,9 +3,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconly/iconly.dart';
 
 import '../../controller_scope.dart';
+import '../../controllers/care_controller.dart';
 import '../../controllers/community_controller.dart';
 import '../../controllers/companion_controller.dart';
 import '../../controllers/hydration_controller.dart';
+import '../../controllers/labs_controller.dart';
 import '../../controllers/mission_controller.dart';
 import '../../controllers/nutrition_controller.dart';
 import '../../controllers/performance_controller.dart';
@@ -32,6 +34,8 @@ class HomeScreen extends StatelessWidget {
     final recoveryController = scope.recoveryController;
     final missionController = scope.missionController;
     final companionController = scope.companionController;
+    final labsController = scope.labsController;
+    final careController = scope.careController;
     final moods = [
       ('calm', loc.translate('mood_calm')),
       ('focused', loc.translate('mood_focused')),
@@ -413,6 +417,10 @@ class HomeScreen extends StatelessWidget {
           _MissionPreview(controller: missionController),
           const SizedBox(height: 24),
           _CompanionPreview(controller: companionController),
+          const SizedBox(height: 24),
+          _LabsPreview(controller: labsController),
+          const SizedBox(height: 24),
+          _CarePreview(controller: careController),
         ],
       ),
     );
@@ -577,6 +585,225 @@ class _NutritionPreview extends StatelessWidget {
                 },
               ),
             );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _LabsPreview extends StatelessWidget {
+  const _LabsPreview({required this.controller});
+
+  final LabsController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.translate('home_labs_title'),
+                      style: theme.textTheme.titleMedium),
+                  Text(loc.translate('home_labs_subtitle'),
+                      style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed('/labs'),
+              child: Text(loc.translate('view_all')),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.upcomingTests,
+          builder: (_, tests, __) {
+            if (tests.isEmpty) {
+              return const SkeletonCard.list();
+            }
+            final test = tests.first;
+            return Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary.withOpacity(.08),
+                    theme.colorScheme.primary.withOpacity(.2),
+                  ],
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(test['title'] as String? ?? '',
+                            style: theme.textTheme.titleMedium),
+                        Text(test['window'] as String? ?? '',
+                            style: theme.textTheme.bodySmall),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(test['status'] as String? ?? ''),
+                      Text(test['preparation'] as String? ?? ''),
+                    ],
+                  ),
+                ],
+              ),
+            ).animate().fadeIn().slideX(begin: .08);
+          },
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.sampleKits,
+          builder: (_, kits, __) {
+            if (kits.isEmpty) {
+              return const SizedBox.shrink();
+            }
+            return Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: kits.take(3).map((kit) {
+                return Container(
+                  width: 160,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22),
+                    color: theme.cardColor,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(kit['title'] as String? ?? '',
+                          style: theme.textTheme.titleSmall),
+                      const SizedBox(height: 6),
+                      LinearProgressIndicator(
+                        value:
+                            (kit['progress'] as double?)?.clamp(0.0, 1.0) ?? 0,
+                      ),
+                      Text(kit['status'] as String? ?? '',
+                          style: theme.textTheme.labelSmall),
+                    ],
+                  ),
+                ).animate().fadeIn();
+              }).toList(),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _CarePreview extends StatelessWidget {
+  const _CarePreview({required this.controller});
+
+  final CareController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.translate('home_care_title'),
+                      style: theme.textTheme.titleMedium),
+                  Text(loc.translate('home_care_subtitle'),
+                      style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed('/care'),
+              child: Text(loc.translate('care_connect_cta')),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.careTeam,
+          builder: (_, members, __) {
+            if (members.isEmpty) {
+              return const SkeletonCard.list();
+            }
+            final member = members.first;
+            return ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(28),
+              ),
+              tileColor: theme.cardColor,
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(member['avatar'] as String),
+              ),
+              title: Text(member['name'] as String? ?? ''),
+              subtitle: Text(member['role'] as String? ?? ''),
+              trailing: Icon(
+                IconlyLight.call,
+                color: theme.colorScheme.primary,
+              ),
+            ).animate().fadeIn().slideX(begin: .08);
+          },
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.tickets,
+          builder: (_, tickets, __) {
+            if (tickets.isEmpty) {
+              return const SizedBox.shrink();
+            }
+            final ticket = tickets.first;
+            return Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(26),
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary.withOpacity(.08),
+                    theme.colorScheme.primary.withOpacity(.2),
+                  ],
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(ticket['title'] as String? ?? ''),
+                        Text('${ticket['channel']} · ${ticket['eta']}'),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    ticket['status'] == 'closed'
+                        ? IconlyBold.tick_square
+                        : IconlyLight.time_circle,
+                    color: theme.colorScheme.primary,
+                  )
+                ],
+              ),
+            ).animate().fadeIn().slideY(begin: .08);
           },
         ),
       ],
