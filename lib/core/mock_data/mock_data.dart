@@ -297,4 +297,179 @@ class MockData {
             })
         .toList();
   }
+
+  static List<Map<String, dynamic>> mealPlans(int seed) {
+    final random = Random(seed + 13);
+    final meals = [
+      {
+        'id': 'meal-breakfast',
+        'title': 'Green focus smoothie',
+        'time': '08:00',
+        'calories': 320,
+        'carbs': 42,
+        'protein': 18,
+        'fat': 12,
+        'image': 'https://images.unsplash.com/photo-1543353071-873f17a7a088',
+      },
+      {
+        'id': 'meal-lunch',
+        'title': 'Rainbow bowl',
+        'time': '13:00',
+        'calories': 480,
+        'carbs': 36,
+        'protein': 30,
+        'fat': 18,
+        'image': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd',
+      },
+      {
+        'id': 'meal-dinner',
+        'title': 'Omega nourish plate',
+        'time': '19:00',
+        'calories': 510,
+        'carbs': 28,
+        'protein': 34,
+        'fat': 22,
+        'image': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
+      },
+    ];
+    return meals
+        .map(
+          (meal) => {
+            ...meal,
+            'favorite': random.nextBool() && meal['id'] != 'meal-dinner',
+            'calories': (meal['calories'] as int) + random.nextInt(60) - 20,
+          },
+        )
+        .toList();
+  }
+
+  static Map<String, dynamic> macroBreakdown(int seed) {
+    final random = Random(seed + 29);
+    final carbs = 35 + random.nextInt(20);
+    final protein = 25 + random.nextInt(15);
+    final fat = 20 + random.nextInt(10);
+    final fiber = 100 - carbs - protein - fat;
+    return {
+      'calories': 1800 + random.nextInt(350),
+      'carbs': carbs,
+      'protein': protein,
+      'fat': fat,
+      'fiber': fiber.clamp(5, 30),
+    };
+  }
+
+  static List<Map<String, dynamic>> snackIdeas(int seed) {
+    final snacks = [
+      {
+        'id': 'snack-nuts',
+        'title': 'Omega trail mix',
+      },
+      {
+        'id': 'snack-tea',
+        'title': 'Ginger focus tea',
+      },
+      {
+        'id': 'snack-fruit',
+        'title': 'Berry polyphenols',
+      },
+    ];
+    final random = Random(seed + 5);
+    return snacks
+        .map(
+          (snack) => {
+            ...snack,
+            'completed': random.nextBool() && snack['id'] == 'snack-fruit',
+          },
+        )
+        .toList();
+  }
+
+  static List<Map<String, dynamic>> hydrationTimeline(int seed) {
+    final random = Random(seed + 8);
+    return List.generate(4, (index) {
+      return {
+        'id': 'hydration-$index',
+        'time': '${8 + index * 3}:00',
+        'amount': (.25 + random.nextDouble() * .2).toStringAsFixed(2),
+        'mood': index.isEven ? 'focus' : 'calm',
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> hydrationReminders(int seed) {
+    final titles = ['Morning glass', 'Midday refill', 'Evening wind down'];
+    final random = Random(seed + 21);
+    return List.generate(titles.length, (index) {
+      return {
+        'id': 'reminder-$index',
+        'title': titles[index],
+        'time': '${9 + index * 4}:30',
+        'active': random.nextBool() || index == 0,
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> communityMoments(int seed) {
+    final random = Random(seed + 44);
+    final titles = [
+      'Calm AM circle',
+      'Movement accountability',
+      'Sleep wind-down wins',
+    ];
+    return List.generate(titles.length, (index) {
+      return {
+        'id': 'moment-$index',
+        'title': titles[index],
+        'summary':
+            'Members logged ${(40 + random.nextInt(40))}% habit adherence.',
+        'time': '${index + 1}h ago',
+        'claps': 20 + random.nextInt(60),
+        'comments': 2 + random.nextInt(8),
+        'image': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e',
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> communityMentors(int seed) {
+    final mentors = [
+      {
+        'id': 'mentor-1',
+        'name': 'Dr. Lina',
+        'role': 'Sleep coach',
+        'avatar': 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39',
+      },
+      {
+        'id': 'mentor-2',
+        'name': 'Coach Tariq',
+        'role': 'Breath mentor',
+        'avatar': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d',
+      },
+      {
+        'id': 'mentor-3',
+        'name': 'Nura',
+        'role': 'Nutritionist',
+        'avatar': 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',
+      },
+    ];
+    final random = Random(seed + 63);
+    return mentors
+        .map((mentor) => {
+              ...mentor,
+              'streak': 12 + random.nextInt(8),
+            })
+        .toList();
+  }
+
+  static List<Map<String, dynamic>> communityCircles(int seed) {
+    final random = Random(seed + 90);
+    final titles = ['Evening breath circle', 'Weekend hike club'];
+    return List.generate(titles.length, (index) {
+      return {
+        'id': 'circle-$index',
+        'title': titles[index],
+        'time': index == 0 ? 'Tonight 20:00' : 'Saturday 09:00',
+        'joined': random.nextBool() && index == 0,
+      };
+    });
+  }
 }

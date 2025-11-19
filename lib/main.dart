@@ -7,9 +7,12 @@ import 'controllers/auth_controller.dart';
 import 'controllers/catalog_controller.dart';
 import 'controllers/checkup_controller.dart';
 import 'controllers/compare_controller.dart';
+import 'controllers/community_controller.dart';
 import 'controllers/dashboard_controller.dart';
 import 'controllers/home_controller.dart';
+import 'controllers/hydration_controller.dart';
 import 'controllers/locale_controller.dart';
+import 'controllers/nutrition_controller.dart';
 import 'controllers/onboarding_controller.dart';
 import 'controllers/profile_controller.dart';
 import 'controllers/reports_controller.dart';
@@ -39,6 +42,9 @@ void main() async {
   final profileController = ProfileController();
   final insightsController = InsightsController();
   final wellnessController = WellnessController();
+  final nutritionController = NutritionController();
+  final hydrationController = HydrationController();
+  final communityController = CommunityController();
   final soundService = DebugSoundService();
 
   runApp(HealthAiApp(
@@ -79,6 +85,9 @@ class HealthAiApp extends StatefulWidget {
     required this.profileController,
     required this.insightsController,
     required this.wellnessController,
+    required this.nutritionController,
+    required this.hydrationController,
+    required this.communityController,
     required this.soundService,
   });
 
@@ -97,6 +106,9 @@ class HealthAiApp extends StatefulWidget {
   final ProfileController profileController;
   final InsightsController insightsController;
   final WellnessController wellnessController;
+  final NutritionController nutritionController;
+  final HydrationController hydrationController;
+  final CommunityController communityController;
   final SoundService soundService;
 
   @override
@@ -129,6 +141,9 @@ class _HealthAiAppState extends State<HealthAiApp> {
           profileController: widget.profileController,
           insightsController: widget.insightsController,
           wellnessController: widget.wellnessController,
+          nutritionController: widget.nutritionController,
+          hydrationController: widget.hydrationController,
+          communityController: widget.communityController,
           prefs: widget.prefs,
           soundService: widget.soundService,
           child: MaterialApp(

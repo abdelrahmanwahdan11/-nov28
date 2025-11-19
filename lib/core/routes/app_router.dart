@@ -9,6 +9,9 @@ import '../../features/dashboard/dashboard_screen.dart';
 import '../../features/home/home_shell.dart';
 import '../../features/insights/coach_screen.dart';
 import '../../features/insights/insights_screen.dart';
+import '../../features/nutrition/nutrition_screen.dart';
+import '../../features/hydration/hydration_screen.dart';
+import '../../features/community/community_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/reports/report_detail_screen.dart';
@@ -58,6 +61,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const MindfulnessScreen());
       case '/sleep':
         return MaterialPageRoute(builder: (_) => const SleepScreen());
+      case '/nutrition':
+        return MaterialPageRoute(builder: (_) => const NutritionScreen());
+      case '/hydration':
+        return MaterialPageRoute(builder: (_) => const HydrationScreen());
+      case '/community':
+        return MaterialPageRoute(builder: (_) => const CommunityScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

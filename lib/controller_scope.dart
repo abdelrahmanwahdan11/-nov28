@@ -4,9 +4,12 @@ import 'controllers/analysis_controller.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/catalog_controller.dart';
 import 'controllers/checkup_controller.dart';
+import 'controllers/community_controller.dart';
 import 'controllers/dashboard_controller.dart';
 import 'controllers/home_controller.dart';
+import 'controllers/hydration_controller.dart';
 import 'controllers/locale_controller.dart';
+import 'controllers/nutrition_controller.dart';
 import 'controllers/onboarding_controller.dart';
 import 'controllers/profile_controller.dart';
 import 'controllers/reports_controller.dart';
@@ -35,6 +38,9 @@ class ControllerScope extends InheritedWidget {
     required this.profileController,
     required this.insightsController,
     required this.wellnessController,
+    required this.nutritionController,
+    required this.hydrationController,
+    required this.communityController,
     required this.prefs,
     required this.soundService,
   });
@@ -53,6 +59,9 @@ class ControllerScope extends InheritedWidget {
   final ProfileController profileController;
   final InsightsController insightsController;
   final WellnessController wellnessController;
+  final NutritionController nutritionController;
+  final HydrationController hydrationController;
+  final CommunityController communityController;
   final SharedPrefsService prefs;
   final SoundService soundService;
 

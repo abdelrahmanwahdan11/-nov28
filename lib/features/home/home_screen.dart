@@ -3,6 +3,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconly/iconly.dart';
 
 import '../../controller_scope.dart';
+import '../../controllers/community_controller.dart';
+import '../../controllers/hydration_controller.dart';
+import '../../controllers/nutrition_controller.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../widgets/ai_info_button.dart';
 import '../../widgets/skeletons.dart';
@@ -18,6 +21,9 @@ class HomeScreen extends StatelessWidget {
     final wellnessController = scope.wellnessController;
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context);
+    final nutritionController = scope.nutritionController;
+    final hydrationController = scope.hydrationController;
+    final communityController = scope.communityController;
     final moods = [
       ('calm', loc.translate('mood_calm')),
       ('focused', loc.translate('mood_focused')),
@@ -385,6 +391,12 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 24),
+          _NutritionPreview(controller: nutritionController),
+          const SizedBox(height: 24),
+          _HydrationPreview(controller: hydrationController),
+          const SizedBox(height: 24),
+          _CommunityPreview(controller: communityController),
         ],
       ),
     );
@@ -468,6 +480,219 @@ class _WellnessCard extends StatelessWidget {
           ],
         ),
       ).animate().scale().fadeIn(),
+    );
+  }
+}
+
+class _NutritionPreview extends StatelessWidget {
+  const _NutritionPreview({required this.controller});
+
+  final NutritionController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.translate('home_nutrition_title'),
+                      style: theme.textTheme.titleMedium),
+                  Text(loc.translate('home_nutrition_subtitle'),
+                      style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed('/nutrition'),
+              child: Text(loc.translate('view_all')),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.mealPlans,
+          builder: (_, meals, __) {
+            if (meals.isEmpty) {
+              return const SkeletonCard.list();
+            }
+            final count = meals.length > 3 ? 3 : meals.length;
+            return SizedBox(
+              height: 150,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: count,
+                itemBuilder: (_, index) {
+                  final meal = meals[index];
+                  return GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamed('/nutrition'),
+                    child: Container(
+                      width: 180,
+                      margin: const EdgeInsets.only(right: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(28),
+                        gradient: LinearGradient(
+                          colors: [
+                            theme.colorScheme.primary.withOpacity(.15),
+                            theme.colorScheme.primary.withOpacity(.05),
+                          ],
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(meal['title'] as String? ?? '',
+                              style: theme.textTheme.titleMedium),
+                          const Spacer(),
+                          Text(meal['time'] as String? ?? ''),
+                          Text('${meal['calories']} kcal',
+                              style: theme.textTheme.labelSmall),
+                        ],
+                      ),
+                    ).animate().fadeIn().slideX(begin: .08),
+                  );
+                },
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _HydrationPreview extends StatelessWidget {
+  const _HydrationPreview({required this.controller});
+
+  final HydrationController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32),
+        color: theme.cardColor,
+      ),
+      child: ValueListenableBuilder<double>(
+        valueListenable: controller.intakeLiters,
+        builder: (_, intake, __) {
+          return ValueListenableBuilder<double>(
+            valueListenable: controller.goalLiters,
+            builder: (_, goal, __) {
+              final progress = (intake / goal).clamp(0.0, 1.2);
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(loc.translate('home_hydration_title'),
+                                style: theme.textTheme.titleMedium),
+                            Text(loc.translate('home_hydration_subtitle'),
+                                style: theme.textTheme.bodySmall),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(IconlyLight.activity),
+                        onPressed: () =>
+                            Navigator.of(context).pushNamed('/hydration'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  LinearProgressIndicator(
+                    value: progress.clamp(0.0, 1.0),
+                    minHeight: 10,
+                    borderRadius: BorderRadius.circular(100),
+                  ).animate().scaleX(alignment: Alignment.centerLeft),
+                  const SizedBox(height: 8),
+                  Text('${intake.toStringAsFixed(1)} / ${goal.toStringAsFixed(1)} L'),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _CommunityPreview extends StatelessWidget {
+  const _CommunityPreview({required this.controller});
+
+  final CommunityController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.translate('home_community_title'),
+                      style: theme.textTheme.titleMedium),
+                  Text(loc.translate('home_community_subtitle'),
+                      style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed('/community'),
+              child: Text(loc.translate('view_all')),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.moments,
+          builder: (_, feed, __) {
+            if (feed.isEmpty) {
+              return const SkeletonCard.list();
+            }
+            return Column(
+              children: feed.take(2).map((moment) {
+                return ListTile(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24)),
+                  tileColor: theme.cardColor,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(moment['image'] as String),
+                  ),
+                  title: Text(moment['title'] as String? ?? ''),
+                  subtitle: Text(moment['summary'] as String? ?? ''),
+                  trailing: IconButton(
+                    icon: const Icon(IconlyLight.heart),
+                    onPressed: () => controller.toggleClap(moment['id'] as String),
+                  ),
+                  onTap: () => Navigator.of(context).pushNamed('/community'),
+                ).animate().fadeIn().slideX(begin: .08);
+              }).toList(),
+            );
+          },
+        ),
+      ],
     );
   }
 }

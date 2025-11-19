@@ -97,6 +97,21 @@ class AppDrawer extends StatelessWidget {
               onTap: () => Navigator.of(context).pushNamed('/sleep'),
             ),
             ListTile(
+              title: Text(loc.translate('nutrition_lab')),
+              trailing: const Icon(IconlyLight.work),
+              onTap: () => Navigator.of(context).pushNamed('/nutrition'),
+            ),
+            ListTile(
+              title: Text(loc.translate('hydration_hub')),
+              trailing: const Icon(IconlyLight.activity),
+              onTap: () => Navigator.of(context).pushNamed('/hydration'),
+            ),
+            ListTile(
+              title: Text(loc.translate('community_room')),
+              trailing: const Icon(IconlyLight.user_1),
+              onTap: () => Navigator.of(context).pushNamed('/community'),
+            ),
+            ListTile(
               title: Text(loc.translate('settings')),
               onTap: () => Navigator.of(context).pushNamed('/settings'),
             ),
