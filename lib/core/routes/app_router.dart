@@ -12,6 +12,7 @@ import '../../features/insights/insights_screen.dart';
 import '../../features/nutrition/nutrition_screen.dart';
 import '../../features/hydration/hydration_screen.dart';
 import '../../features/community/community_screen.dart';
+import '../../features/companion/companion_screen.dart';
 import '../../features/performance/performance_screen.dart';
 import '../../features/recovery/recovery_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
@@ -20,6 +21,7 @@ import '../../features/reports/report_detail_screen.dart';
 import '../../features/reports/reports_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/splash/splash_screen.dart';
+import '../../features/mission/mission_screen.dart';
 import '../../features/wellness/journey_screen.dart';
 import '../../features/wellness/mindfulness_screen.dart';
 import '../../features/wellness/sleep_screen.dart';
@@ -73,6 +75,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const PerformanceScreen());
       case '/recovery':
         return MaterialPageRoute(builder: (_) => const RecoveryScreen());
+      case '/mission':
+        return MaterialPageRoute(builder: (_) => const MissionScreen());
+      case '/companion':
+        return MaterialPageRoute(builder: (_) => const CompanionScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

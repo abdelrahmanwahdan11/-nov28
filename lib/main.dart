@@ -7,6 +7,7 @@ import 'controllers/auth_controller.dart';
 import 'controllers/catalog_controller.dart';
 import 'controllers/checkup_controller.dart';
 import 'controllers/compare_controller.dart';
+import 'controllers/companion_controller.dart';
 import 'controllers/community_controller.dart';
 import 'controllers/dashboard_controller.dart';
 import 'controllers/home_controller.dart';
@@ -19,6 +20,7 @@ import 'controllers/recovery_controller.dart';
 import 'controllers/reports_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'controllers/insights_controller.dart';
+import 'controllers/mission_controller.dart';
 import 'controllers/performance_controller.dart';
 import 'controllers/wellness_controller.dart';
 import 'core/localization/app_localizations.dart';
@@ -49,6 +51,8 @@ void main() async {
   final communityController = CommunityController();
   final performanceController = PerformanceController();
   final recoveryController = RecoveryController();
+  final missionController = MissionController();
+  final companionController = CompanionController();
   final soundService = DebugSoundService();
 
   runApp(HealthAiApp(
@@ -72,6 +76,8 @@ void main() async {
     communityController: communityController,
     performanceController: performanceController,
     recoveryController: recoveryController,
+    missionController: missionController,
+    companionController: companionController,
     soundService: soundService,
   ));
 }
@@ -99,6 +105,8 @@ class HealthAiApp extends StatefulWidget {
     required this.communityController,
     required this.performanceController,
     required this.recoveryController,
+    required this.missionController,
+    required this.companionController,
     required this.soundService,
   });
 
@@ -122,6 +130,8 @@ class HealthAiApp extends StatefulWidget {
   final CommunityController communityController;
   final PerformanceController performanceController;
   final RecoveryController recoveryController;
+  final MissionController missionController;
+  final CompanionController companionController;
   final SoundService soundService;
 
   @override
@@ -159,6 +169,8 @@ class _HealthAiAppState extends State<HealthAiApp> {
           communityController: widget.communityController,
           performanceController: widget.performanceController,
           recoveryController: widget.recoveryController,
+          missionController: widget.missionController,
+          companionController: widget.companionController,
           prefs: widget.prefs,
           soundService: widget.soundService,
           child: MaterialApp(

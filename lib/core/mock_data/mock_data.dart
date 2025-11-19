@@ -167,6 +167,139 @@ class MockData {
     });
   }
 
+  static List<Map<String, dynamic>> missionTimeline([int seed = 0]) {
+    final random = Random(seed + 33);
+    final missions = [
+      'Stabilize circadian rhythm',
+      'Prime hydration loops',
+      'Layer mindful breaks',
+      'Strengthen cardio base',
+    ];
+    return List.generate(missions.length, (index) {
+      final progress = .35 + random.nextDouble() * .5;
+      return {
+        'id': 'mission-$index',
+        'title': missions[index],
+        'summary':
+            'Focus window ${index + 1} with ${12 + index * 6}h runway remaining.',
+        'progress': progress,
+        'eta': '${random.nextInt(3) + 1}d',
+        'status': progress > .8 ? 'ready' : 'in_progress',
+        'color': Color(0xFF71E5A1 + index * 0x00111111),
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> missionPillars([int seed = 0]) {
+    final random = Random(seed + 61);
+    final items = [
+      {
+        'id': 'pillar-light',
+        'title': 'Light + sleep',
+        'subtitle': 'Morning light + deep sleep window',
+      },
+      {
+        'id': 'pillar-hydration',
+        'title': 'Hydration loops',
+        'subtitle': '250ml every 90 minutes',
+      },
+      {
+        'id': 'pillar-movement',
+        'title': 'Micro movement',
+        'subtitle': 'Mobility snacks & steps',
+      },
+      {
+        'id': 'pillar-breath',
+        'title': 'Breath balance',
+        'subtitle': 'Box breathing before focus blocks',
+      },
+    ];
+    return items
+        .map((pillar) => {
+              ...pillar,
+              'active': random.nextBool(),
+            })
+        .toList();
+  }
+
+  static List<Map<String, dynamic>> missionRituals([int seed = 0]) {
+    final random = Random(seed + 101);
+    final rituals = [
+      '2 min breath holds',
+      'Protein-rich breakfast',
+      'Afternoon sunlight walk',
+      'Evening blue-light break',
+      'Mobility before desk work',
+    ];
+    return List.generate(rituals.length, (index) {
+      return {
+        'id': 'ritual-$index',
+        'title': rituals[index],
+        'duration': '${5 + random.nextInt(6)} min',
+        'completed': random.nextBool() && index.isEven,
+      };
+    });
+  }
+
+  static List<Map<String, dynamic>> companionPrompts([int seed = 0]) {
+    final prompts = [
+      {
+        'id': 'prompt-energy',
+        'label': 'Energy check',
+        'body': 'How can I keep my energy steady this afternoon?',
+      },
+      {
+        'id': 'prompt-focus',
+        'label': 'Focus stack',
+        'body': 'Suggest a focus ritual for my next deep-work block.',
+      },
+      {
+        'id': 'prompt-sleep',
+        'label': 'Sleep prep',
+        'body': 'What should I log before bed to improve sleep score?',
+      },
+      {
+        'id': 'prompt-recovery',
+        'label': 'Recovery boost',
+        'body': 'Recommend a quick recovery combo for tonight.',
+      },
+    ];
+    final random = Random(seed + 7);
+    return prompts
+        .map((prompt) => {
+              ...prompt,
+              'emoji': ['⚡️', '🎯', '🌙', '🌊'][random.nextInt(4)],
+            })
+        .toList();
+  }
+
+  static String initialCompanionGreeting([int seed = 0]) {
+    final greetings = [
+      'Great job stabilizing hydration the last 24h. Ready for a deeper scan?',
+      'Your HRV uptick shows calmer mornings. Want a breathing stack?',
+      'Movement streak detected. I can layer a recovery combo if you\'d like.',
+    ];
+    final random = Random(seed + 3);
+    return greetings[random.nextInt(greetings.length)];
+  }
+
+  static String generateCompanionReply(String topic, int seed) {
+    final random = Random(seed + topic.length);
+    final anchors = [
+      'Pair a light stretch with 4-6 breathing before ${topic.toLowerCase()}.',
+      'Log a quick reflection in Mission Control so I can adapt your cues.',
+      'Stack a 250ml sip + daylight break; it stabilizes your focus arc.',
+      'Consider a gentle mobility snack; it keeps recovery trending upward.',
+    ];
+    final closing = [
+      'Ping me again after you complete it.',
+      'I\'ll watch your vitals and nudge you if anything drifts.',
+      'Save this as a ritual to surface it on the home mission cards.',
+    ];
+    return '${anchors[random.nextInt(anchors.length)]} '
+        '${closing[random.nextInt(closing.length)]}';
+  }
+
   static List<Map<String, dynamic>> coachPlan([int seed = 0]) {
     final steps = [
       {

@@ -4,7 +4,9 @@ import 'package:iconly/iconly.dart';
 
 import '../../controller_scope.dart';
 import '../../controllers/community_controller.dart';
+import '../../controllers/companion_controller.dart';
 import '../../controllers/hydration_controller.dart';
+import '../../controllers/mission_controller.dart';
 import '../../controllers/nutrition_controller.dart';
 import '../../controllers/performance_controller.dart';
 import '../../controllers/recovery_controller.dart';
@@ -28,6 +30,8 @@ class HomeScreen extends StatelessWidget {
     final communityController = scope.communityController;
     final performanceController = scope.performanceController;
     final recoveryController = scope.recoveryController;
+    final missionController = scope.missionController;
+    final companionController = scope.companionController;
     final moods = [
       ('calm', loc.translate('mood_calm')),
       ('focused', loc.translate('mood_focused')),
@@ -405,6 +409,10 @@ class HomeScreen extends StatelessWidget {
           _PerformancePreview(controller: performanceController),
           const SizedBox(height: 24),
           _RecoveryPreview(controller: recoveryController),
+          const SizedBox(height: 24),
+          _MissionPreview(controller: missionController),
+          const SizedBox(height: 24),
+          _CompanionPreview(controller: companionController),
         ],
       ),
     );
@@ -878,6 +886,320 @@ class _RecoveryPreview extends StatelessWidget {
                       ),
                     ],
                   ),
+                ).animate().fadeIn();
+              }).toList(),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _MissionPreview extends StatelessWidget {
+  const _MissionPreview({required this.controller});
+
+  final MissionController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.translate('home_mission_title'),
+                      style: theme.textTheme.titleMedium),
+                  Text(loc.translate('home_mission_subtitle'),
+                      style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed('/mission'),
+              child: Text(loc.translate('view_all')),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<double>(
+          valueListenable: controller.readiness,
+          builder: (_, readiness, __) {
+            return Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(32),
+                gradient: LinearGradient(colors: [
+                  theme.colorScheme.primary.withOpacity(.12),
+                  theme.colorScheme.primary.withOpacity(.28),
+                ]),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 72,
+                    height: 72,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        CircularProgressIndicator(
+                          value: readiness,
+                          strokeWidth: 6,
+                          backgroundColor:
+                              theme.colorScheme.onPrimary.withOpacity(.1),
+                        ),
+                        Center(
+                          child: Text('${(readiness * 100).round()}%',
+                              style: theme.textTheme.titleMedium),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(loc.translate('mission_readiness'),
+                        style: theme.textTheme.bodyMedium),
+                  ),
+                ],
+              ),
+            ).animate().fadeIn().scale(begin: const Offset(.98, .98));
+          },
+        ),
+        const SizedBox(height: 16),
+        Text(loc.translate('mission_pillars'),
+            style: theme.textTheme.titleSmall),
+        const SizedBox(height: 8),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.pillars,
+          builder: (_, pillars, __) {
+            if (pillars.isEmpty) {
+              return Wrap(
+                spacing: 8,
+                children: const [SkeletonChip(), SkeletonChip(), SkeletonChip()],
+              );
+            }
+            return Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: pillars.map((pillar) {
+                final selected = pillar['active'] == true;
+                return ChoiceChip(
+                  label: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(pillar['title'] as String),
+                      Text(pillar['subtitle'] as String,
+                          style: theme.textTheme.labelSmall),
+                    ],
+                  ),
+                  selected: selected,
+                  onSelected: (_) =>
+                      controller.togglePillar(pillar['id'] as String),
+                ).animate().fadeIn();
+              }).toList(),
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        Text(loc.translate('mission_rituals'),
+            style: theme.textTheme.titleSmall),
+        const SizedBox(height: 8),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.rituals,
+          builder: (_, rituals, __) {
+            if (rituals.isEmpty) {
+              return const SkeletonCard.list();
+            }
+            return Column(
+              children: rituals.take(3).map((ritual) {
+                final done = ritual['completed'] == true;
+                return GestureDetector(
+                  onTap: () => controller.completeRitual(ritual['id'] as String),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      color: theme.cardColor,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(done ? Icons.check_circle : Icons.circle_outlined,
+                            color: done
+                                ? theme.colorScheme.primary
+                                : theme.disabledColor),
+                        const SizedBox(width: 12),
+                        Expanded(child: Text(ritual['title'] as String)),
+                        Text(ritual['duration'] as String,
+                            style: theme.textTheme.labelSmall),
+                      ],
+                    ),
+                  ).animate().fadeIn().slideX(begin: .08),
+                );
+              }).toList(),
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        Text(loc.translate('mission_timeline'),
+            style: theme.textTheme.titleSmall),
+        const SizedBox(height: 8),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.missions,
+          builder: (_, missions, __) {
+            if (missions.isEmpty) {
+              return const SkeletonCard.large();
+            }
+            return SizedBox(
+              height: 160,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: missions.length,
+                itemBuilder: (_, index) {
+                  final mission = missions[index];
+                  final progress = mission['progress'] as double? ?? .5;
+                  return Container(
+                    width: 200,
+                    margin: const EdgeInsets.only(right: 16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(28),
+                      gradient: LinearGradient(colors: [
+                        (mission['color'] as Color?) ??
+                            theme.colorScheme.primary.withOpacity(.2),
+                        theme.colorScheme.primary.withOpacity(.15),
+                      ]),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(mission['title'] as String,
+                            style: theme.textTheme.titleSmall),
+                        const SizedBox(height: 6),
+                        Text(mission['summary'] as String,
+                            style: theme.textTheme.bodySmall,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis),
+                        const Spacer(),
+                        LinearProgressIndicator(value: progress),
+                        const SizedBox(height: 6),
+                        Text('${(progress * 100).round()}% · ${mission['eta']}',
+                            style: theme.textTheme.labelSmall),
+                      ],
+                    ),
+                  ).animate().fadeIn().slideX(begin: .1 * index);
+                },
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _CompanionPreview extends StatelessWidget {
+  const _CompanionPreview({required this.controller});
+
+  final CompanionController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.translate('home_companion_title'),
+                      style: theme.textTheme.titleMedium),
+                  Text(loc.translate('home_companion_subtitle'),
+                      style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed('/companion'),
+              child: Text(loc.translate('view_all')),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.messages,
+          builder: (_, messages, __) {
+            if (messages.isEmpty) {
+              return const SkeletonCard.large();
+            }
+            Map<String, dynamic>? latestAi;
+            for (final message in messages.reversed) {
+              if (message['role'] == 'ai') {
+                latestAi = message;
+                break;
+              }
+            }
+            latestAi ??= messages.last;
+            final time = latestAi['time'] is DateTime
+                ? TimeOfDay.fromDateTime(latestAi['time'] as DateTime)
+                    .format(context)
+                : '';
+            return Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(28),
+                color: theme.colorScheme.surfaceVariant.withOpacity(.3),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(latestAi['text'] as String,
+                      style: theme.textTheme.bodyLarge),
+                  const SizedBox(height: 8),
+                  Text(time, style: theme.textTheme.labelSmall),
+                ],
+              ),
+            ).animate().fadeIn().scale(begin: const Offset(.98, .98));
+          },
+        ),
+        const SizedBox(height: 12),
+        Text(loc.translate('ai_companion_prompts'),
+            style: theme.textTheme.titleSmall),
+        const SizedBox(height: 8),
+        ValueListenableBuilder<List<Map<String, dynamic>>>(
+          valueListenable: controller.prompts,
+          builder: (_, prompts, __) {
+            if (prompts.isEmpty) {
+              return Wrap(
+                spacing: 8,
+                children: const [SkeletonChip(), SkeletonChip()],
+              );
+            }
+            return Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: prompts.map((prompt) {
+                final body = prompt['body'] as String;
+                final emoji = prompt['emoji'] as String? ?? '';
+                final label = prompt['label'] as String? ?? '';
+                final display = emoji.isNotEmpty ? '$emoji $label' : label;
+                return ActionChip(
+                  label: Text(display),
+                  onPressed: () {
+                    controller.usePrompt(body);
+                    Navigator.of(context).pushNamed('/companion');
+                  },
                 ).animate().fadeIn();
               }).toList(),
             );
